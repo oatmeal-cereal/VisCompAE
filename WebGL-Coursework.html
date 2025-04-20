@@ -28,6 +28,7 @@
 		// Note: You can add your own here, e.g. to store the rendering mode.
 		var camera, scene, renderer, mesh;
 		var loader = new THREE.OBJLoader();
+		var bunny = null;
 
 		// Initialise the scene, and draw it for the first time.
 		init();
@@ -44,7 +45,7 @@
 			// Set up the camera, move it to (3, 4, 5) and look at the origin (0, 0, 0).
 			camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 			//camera.position.set(3, 4, 5);
-			camera.position.set(0, 4, 0); //look from above
+			camera.position.set(3, 4, 5); //look from above
 			camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 			// Draw a helper grid in the x-z plane (note: y is up).
@@ -52,7 +53,7 @@
 
 			// TASK: Draw a cube (requirement 0).
 			const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide, transparent: true, opacity: 0.3 } );
 			const cube = new THREE.Mesh( geometry, material );
 			scene.add( cube );
 
@@ -65,21 +66,40 @@
 				var centre = box.getCenter(centrevector);
 				object.position.x -= centre.x / maxsize;
 				object.scale.setScalar(1/maxsize);
+
 				scene.add(object);
+				bunny = object;
 			});
 
 			// TASK: Visualise the axes of the global coordinate system (requirment 0).
 			// Add AxesHelper to visualize the global coordinate system
 			const axesHelper = new THREE.AxesHelper(2); // The parameter defines the size of the axes
 			scene.add(axesHelper);
+
 			// Basic ambient lighting.
 			scene.add(new THREE.AmbientLight(0x000fff));
+
 			// TASK: add more complex lighting for 'face' rendering mode (requirement 2).
+			// Added a directional light to simulate sunlight
+			var light = new THREE.DirectionalLight(0xffffff, 1);
+			light.position.set(5, 10, 7);
+			scene.add(light);
+
+			// Added a secondary fill light to soften shadows and add depth
+			var fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+			fillLight.position.set(-5, 5, -5);
+			scene.add(fillLight);
+
+			// // Added a back light to create a rim light effect
+			var backLight = new THREE.DirectionalLight(0xffffff, 0.6);
+			backLight.position.set(0, 5, -10);
+			scene.add(backLight);
 
 			// Set up the Web GL renderer.
 			renderer = new THREE.WebGLRenderer({ antialias: true });
 			renderer.setPixelRatio(window.devicePixelRatio); // HiDPI/retina rendering
 			renderer.setSize(window.innerWidth, window.innerHeight);
+
 			document.body.appendChild(renderer.domElement);
 
 			// Handle resizing of the browser window.
@@ -108,11 +128,28 @@
 			switch (event.key) {
 				// Render modes.
 				case 'f': // f = face
-					alert('TASK: add code for face render mode (requirement 2).');
+					if (bunny) {
+						bunny.traverse(function(child) {
+							if (child.isMesh) {
+								child.material = new THREE.MeshStandardMaterial({
+									color: 0xdddddd,
+									metalness: 0.3,
+									roughness: 0.6
+								});
+								child.material.wireframe = false;
+							}
+						});
+					}
 					break;
 
 				case 'e': // e = edge
-					alert('TASK: add code for edge render mode (requirement 2).');
+					if (bunny) {
+						bunny.traverse(function(child) {
+							if (child.isMesh) {
+								child.material.wireframe = true;
+							}
+						})
+					}
 					break;
 
 				case 'v': // v = vertex
