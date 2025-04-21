@@ -35,6 +35,7 @@
 		var rotateX_bunny = false;
 		var rotateY_bunny = false;
 		var rotateZ_bunny = false;
+		let currentRenderMode = 'faces';
 
 		// Initialise the scene, and draw it for the first time.
 		init();
@@ -182,21 +183,31 @@
 					rotateY = false;
 					rotateZ = true;
 					break;
+				case 's':
+					rotateX = false;
+					rotateY = false;
+					rotateZ = false;
+					break;
 				
 				case 'X':
-				rotateX_bunny = true;
-				rotateY_bunny = false;
-				rotateZ_bunny = false;
+					rotateX_bunny = true;
+					rotateY_bunny = false;
+					rotateZ_bunny = false;
 					break;
 				case 'Y':
-				rotateX_bunny = false;
-				rotateY_bunny = true;
-				rotateZ_bunny = false;
+					rotateX_bunny = false;
+					rotateY_bunny = true;
+					rotateZ_bunny = false;
 					break;
 				case 'Z':
-				rotateX_bunny = false;
-				rotateY_bunny = false;
-				rotateZ_bunny = true;
+					rotateX_bunny = false;
+					rotateY_bunny = false;
+					rotateZ_bunny = true;
+					break;
+				case 'S':
+					rotateX_bunny = false;
+					rotateY_bunny = false;
+					rotateZ_bunny = false;
 					break;
 
 			
@@ -241,8 +252,44 @@
 					}
 					break;
 				// TASK: add code for starting/stopping rotations (requirement 1).
+
+				case '1':
+					currentRenderMode = 'vertices';
+					updateCubeRenderMode();
+					break;
+				case '2':
+					currentRenderMode = 'edges';
+					updateCubeRenderMode();
+					break;
+				case '3':
+					currentRenderMode = 'faces';
+					updateCubeRenderMode();
+					break;
 			
 			}
+		}
+		
+		function updateCubeRenderMode() {
+			scene.remove(cube);
+			const geometry = new THREE.BoxGeometry(1, 1, 1);
+			let newCube;
+
+			if (currentRenderMode === 'vertices') {
+				const material = new THREE.PointsMaterial({ color: 0xff0000, size: 0.05 });
+				newCube = new THREE.Points(geometry, material);
+			} else if (currentRenderMode === 'edges') {
+				const edges = new THREE.EdgesGeometry(geometry);
+				const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+				newCube = new THREE.LineSegments(edges, material);
+			} else {
+				const material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+				newCube = new THREE.Mesh(geometry, material);
+			}
+
+			newCube.rotation.copy(cube.rotation);
+			newCube.position.copy(cube.position);
+			cube = newCube;
+			scene.add(cube);
 		}
 	</script>
 </body>
