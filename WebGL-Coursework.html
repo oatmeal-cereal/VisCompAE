@@ -243,6 +243,46 @@
 				// TASK: add code for starting/stopping rotations (requirement 1).
 			
 			}
+			switch (event.key.toLowerCase()) {
+				case '1':
+				case 'v':
+					currentRenderMode = 'vertices';
+					updateCubeRenderMode();
+					break;
+				case '2':
+				case 'e':
+					currentRenderMode = 'edges';
+					updateCubeRenderMode();
+					break;
+				case '3':
+				case 'f':
+					currentRenderMode = 'faces';
+					updateCubeRenderMode();
+					break;
+			}
+		}
+		
+		function updateCubeRenderMode() {
+			scene.remove(cube);
+			const geometry = new THREE.BoxGeometry(1, 1, 1);
+			let newCube;
+
+			if (currentRenderMode === 'vertices') {
+				const material = new THREE.PointsMaterial({ color: 0xff0000, size: 0.05 });
+				newCube = new THREE.Points(geometry, material);
+			} else if (currentRenderMode === 'edges') {
+				const edges = new THREE.EdgesGeometry(geometry);
+				const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+				newCube = new THREE.LineSegments(edges, material);
+			} else {
+				const material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+				newCube = new THREE.Mesh(geometry, material);
+			}
+
+			newCube.rotation.copy(cube.rotation);
+			newCube.position.copy(cube.position);
+			cube = newCube;
+			scene.add(cube);
 		}
 	</script>
 </body>
