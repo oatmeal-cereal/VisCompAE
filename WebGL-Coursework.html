@@ -183,21 +183,31 @@
 					rotateY = false;
 					rotateZ = true;
 					break;
+				case 's':
+					rotateX = false;
+					rotateY = false;
+					rotateZ = false;
+					break;
 				
 				case 'X':
-				rotateX_bunny = true;
-				rotateY_bunny = false;
-				rotateZ_bunny = false;
+					rotateX_bunny = true;
+					rotateY_bunny = false;
+					rotateZ_bunny = false;
 					break;
 				case 'Y':
-				rotateX_bunny = false;
-				rotateY_bunny = true;
-				rotateZ_bunny = false;
+					rotateX_bunny = false;
+					rotateY_bunny = true;
+					rotateZ_bunny = false;
 					break;
 				case 'Z':
-				rotateX_bunny = false;
-				rotateY_bunny = false;
-				rotateZ_bunny = true;
+					rotateX_bunny = false;
+					rotateY_bunny = false;
+					rotateZ_bunny = true;
+					break;
+				case 'S':
+					rotateX_bunny = false;
+					rotateY_bunny = false;
+					rotateZ_bunny = false;
 					break;
 
 			
@@ -242,9 +252,7 @@
 					}
 					break;
 				// TASK: add code for starting/stopping rotations (requirement 1).
-			
-			}
-			switch (event.key.toLowerCase()) {
+
 				case '1':
 					currentRenderMode = 'vertices';
 					updateCubeRenderMode();
@@ -257,6 +265,7 @@
 					currentRenderMode = 'faces';
 					updateCubeRenderMode();
 					break;
+			
 			}
 		}
 		
